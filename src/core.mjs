@@ -1,4 +1,6 @@
 /** Pure local text parsing and Quick Translator export, no network access. */
+import {assessEntry, validForExport, containsHan, QUALITY_STATUSES, qualitySummary} from './quality.mjs';
+export {assessEntry, validForExport, containsHan, QUALITY_STATUSES, qualitySummary};
 export const CATEGORIES = Object.freeze([
   ['PERSON','Nhân vật'],['ALIAS','Biệt danh / tên gọi'],['TITLE','Danh xưng / chức vụ'],
   ['DAO_NAME','Đạo hiệu / thần hiệu / tôn hiệu'],['LOCATION','Địa danh / thế giới'],
@@ -67,7 +69,7 @@ export function normalizeName(record, originalChunk='') {
   if(!zh||!vi||zh.length>48||vi.length>110||!cn.test(zh))return null;
   if(originalChunk && !originalChunk.includes(zh))return null;
   if(/^[\p{P}\p{S}\d\s]+$/u.test(vi))return null;
-  return {zh,vi,category:categorySet.has(cat)?cat:'OTHER', count:1, reviewed:false};
+  return assessEntry({zh,vi,category:categorySet.has(cat)?cat:'OTHER', count:1, reviewed:false, origin: ['domestic','foreign','unknown'].includes(record.origin)?record.origin:'unknown', type: record.type==='term'?'term':record.type==='generic'?'generic':'name', isForeign: record.isForeign===true, originConfirmed:record.originConfirmed===true, foreignVerified:record.foreignVerified===true, evidence:String(record.evidence||'').slice(0,200)});
 }
 export function mergeEntries(existing,newRecords,chunk='') {
   const map=new Map(existing.map(x=>[x.zh,{...x}]));
@@ -76,7 +78,17 @@ export function mergeEntries(existing,newRecords,chunk='') {
     const prev=map.get(e.zh);
     if(prev) {
       prev.count=(prev.count||1)+1;
-      if(prev.vi!==e.vi)prev.alternatives=[...new Set([...(prev.alternatives||[]),e.vi])];
+      if(prev.vi!==e.vi) {
+        prev.alternatives=[...new Set([...(prev.alternatives||[]),e.vi])];
+        // Replace an invalid mixed-Han translation only if the new one is safe.
+        if(containsHan(prev.vi) && !containsHan(e.vi) && !prev.reviewed){
+          prev.alternatives=[...new Set([...(prev.alternatives||[]),prev.vi])].filter(x=>x!==e.vi);
+          prev.vi=e.vi;
+        }
+      }
+      if(e.origin==='foreign' && !prev.originConfirmed)prev.origin='foreign';
+      if(e.evidence && !prev.evidence)prev.evidence=e.evidence;
+      Object.assign(prev, assessEntry(prev));
     } else map.set(e.zh,e);
   }
   return [...map.values()];
@@ -96,11 +108,15 @@ export function parseAIResult(raw) {
 export function sortedEntries(entries) {
   return [...entries].filter(x=>x.zh&&x.vi).sort((a,b)=> b.zh.length-a.zh.length||a.zh.localeCompare(b.zh,'zh'));
 }
-export function exportClean(entries) {return sortedEntries(entries).map(x=>`${x.zh}=${x.vi}`).join('\n')+'\n';}
-export function exportGrouped(entries) {
+export function exportableEntries(entries,{includeTerms=false}={}) {
+  return sortedEntries(entries.map(x=>assessEntry(x)).filter(x=>validForExport(x,includeTerms)));
+}
+export function exportClean(entries,options={}) {return exportableEntries(entries,options).map(x=>`${x.zh}=${x.vi}`).join('\n')+'\n';}
+export function exportGrouped(entries,options={}) {
+  const selected=exportableEntries(entries,options);
   const rows=[];
   for(const [key,label] of CATEGORIES) {
-    const group=sortedEntries(entries.filter(x=>x.category===key));
+    const group=selected.filter(x=>x.category===key);
     if(!group.length)continue;
     rows.push(`# ${label} (${group.length})`);
     for(const item of group)rows.push(`${item.zh}=${item.vi}`);
@@ -109,3 +125,22 @@ export function exportGrouped(entries) {
   return rows.join('\n').trimEnd()+'\n';
 }
 export function safeFilename(name){return String(name).replace(/[\\/:*?"<>|\x00-\x1f]/g,'_').slice(0,90)||'novel';}
+
+/** Parse existing categorised or plain Quick Translator NAME files for local QA. */
+export function parseNameTxt(raw) {
+  let category='OTHER';const found=[];
+  for(const originalLine of normalizeText(raw).split('\n')) {
+    const line=originalLine.trim();if(!line)continue;
+    if(line.startsWith('#')) {
+      const name=line.slice(1).trim().replace(/\s*\(\d+\)\s*$/u,'').trim();
+      const matched=CATEGORIES.find(row=>row[1]===name);
+      if(matched)category=matched[0];
+      continue;
+    }
+    const idx=line.indexOf('=');if(idx<1)continue;
+    const zh=line.slice(0,idx).trim(),vi=line.slice(idx+1).trim();
+    const entry=normalizeName({zh,vi,category});
+    if(entry)found.push(entry);
+  }
+  return mergeEntries([],found);
+}

@@ -8,15 +8,16 @@
 <body>
 <div class="shell">
   <aside class="sidebar">
-    <div class="brand"><span class="mark">名</span><div><b>NOVEL NAME</b><small>PLUS EDITION · v0.1</small></div></div>
+    <div class="brand"><span class="mark">名</span><div><b>NOVEL NAME</b><small>PLUS EDITION · v0.3</small></div></div>
     <div class="sideLabel">BẢNG ĐIỀU KHIỂN</div>
     <nav><button class="nav active" data-target="workspace">◈ &nbsp; Không gian lọc NAME</button><button class="nav" data-target="results">▤ &nbsp; Danh sách kết quả</button><button class="nav" data-target="guide">◇ &nbsp; Hướng dẫn</button></nav>
     <div class="sideFoot"><span class="secureDot"></span> Xử lý file tại máy của bạn<br><small>Chỉ gửi từng đoạn truyện đến OpenAI khi bạn bấm quét.</small></div>
   </aside>
   <main>
-    <header class="top"><div><span class="crumb">ỨNG DỤNG</span><span class="slash">/</span><strong>Lọc NAME Trung–Việt</strong></div><div class="topBtns"><button id="usage" class="ghost">Hạn mức Plus ↗</button><span id="authIndicator" class="pill">Chưa kết nối</span></div></header>
+    <header class="top"><div><span class="crumb">ỨNG DỤNG</span><span class="slash">/</span><strong>Lọc NAME Trung–Việt</strong></div><div class="topBtns"><button id="updateCheck" class="ghost">↻ Kiểm tra cập nhật</button><button id="usage" class="ghost">Hạn mức Plus ↗</button><span id="authIndicator" class="pill">Chưa kết nối</span></div></header>
     <section id="workspace" class="page">
-      <div class="hero"><div class="eyebrow">TRỢ LÝ TRÍCH XUẤT TÊN RIÊNG</div><h1>Chuẩn hóa NAME.<br><em>Giữ đúng mạch truyện.</em></h1><p>Quét theo chương, phân 14 nhóm, rà hai lượt, tiếp tục từ chỗ dừng. Xuất trực tiếp cho Quick Translator.</p></div>
+      <div id="updateBanner" class="updateBanner hidden"><div><b id="updateTitle">Cập nhật</b><p id="updateMessage">Đang kiểm tra phiên bản.</p><div id="updateProgress" class="updateProgress hidden"><span id="updateProgressBar"></span></div></div><div class="btnLine"><button id="updateDownload" class="mini hidden">Tải cập nhật</button><button id="updateInstall" class="mini primary hidden">Cài và khởi động lại</button><button id="updateReleases" class="mini ghost">GitHub Releases ↗</button></div></div>
+      <div class="hero"><div class="eyebrow">TRỢ LÝ TRÍCH XUẤT TÊN RIÊNG</div><h1>Chuẩn hóa NAME.<br><em>Giữ đúng mạch truyện.</em></h1><p>Quét theo chương, phân 14 nhóm, rà hai lượt. Tự kiểm tra hậu tố, tên quốc tế và loại từ phổ thông trước khi xuất cho Quick Translator.</p></div>
       <div class="layout">
         <div class="leftCol">
           <div class="panel"><div class="panelTop"><div><span class="step">01</span><h2>Nạp truyện</h2></div><span class="muted">TXT · UTF-8 / GB18030</span></div>
@@ -39,18 +40,18 @@
             <div class="settingsRow"><label>Giới hạn ký tự/đoạn <select id="chunkSize"><option value="4000">4.000 (kỹ)</option><option value="6300" selected>6.300 (cân bằng)</option><option value="8500">8.500 (nhanh)</option></select></label></div>
             <div class="log"><span class="logHead">NHẬT KÝ</span><div id="logLines">Sẵn sàng nạp truyện.</div></div>
           </div>
-          <div class="panel highlight"><h3>Hai bản xuất · Một quy chuẩn</h3><p><b>NAME phân loại</b> dành cho biên tập; <b>NAME sạch</b> chỉ có <code>中文=Tiếng Việt</code> để nhập Quick Translator.</p><div class="btnLine"><button class="ghost" id="exportGrouped" disabled>⇩ &nbsp; TXT phân nhóm</button><button class="ghost" id="exportClean" disabled>⇩ &nbsp; TXT Quick Translator</button></div></div>
+          <div class="panel highlight"><h3>Hai bản xuất · Một quy chuẩn</h3><p><b>NAME phân loại</b> dành cho biên tập; <b>NAME sạch</b> chỉ có <code>中文=Tiếng Việt</code> để nhập Quick Translator.</p><label class="optionLine"><input id="includeTerms" type="checkbox"> Xuất thêm thuật ngữ đã phân loại</label><p id="exportHint" class="micro">Chưa có NAME để xuất.</p><div class="btnLine"><button class="ghost" id="exportGrouped" disabled>⇩ &nbsp; TXT phân nhóm</button><button class="ghost" id="exportClean" disabled>⇩ &nbsp; TXT Quick Translator</button></div></div>
         </div>
       </div>
     </section>
-    <section id="results" class="page hidden"><div class="pageHeader"><div><div class="eyebrow">TỪ ĐIỂN KẾT QUẢ</div><h1>Danh sách NAME</h1><p>Chỉnh sửa tên Việt, đổi nhóm, đánh dấu đã kiểm tra rồi xuất TXT.</p></div><span id="resultCount" class="pill neutral">0 mục</span></div>
-      <div class="panel"><div class="tools"><input id="search" placeholder="Tìm theo tên Trung hoặc tiếng Việt…"><select id="filterCategory"></select><button id="addName" class="mini">+ Thêm NAME</button></div>
-      <div class="tablewrap"><table><thead><tr><th>NAME gốc</th><th>Hán Việt / Tên Việt</th><th>Phân loại</th><th>Lượt phát hiện</th><th>Kiểm tra</th><th></th></tr></thead><tbody id="tableBody"><tr><td colspan="6" class="empty">Chưa có NAME nào.</td></tr></tbody></table></div>
-      <div class="tableFooter"><span id="shownCount">0 mục đang hiển thị</span><div class="btnLine"><button id="exportGrouped2" class="ghost">⇩ TXT phân nhóm</button><button id="exportClean2" class="primary">⇩ TXT sạch</button></div></div></div>
+    <section id="results" class="page hidden"><div class="pageHeader"><div><div class="eyebrow">TỪ ĐIỂN KẾT QUẢ</div><h1>Danh sách NAME</h1><p>Nhập NAME cũ, phân loại: giữ / thuật ngữ / cần rà / loại. Tên quốc tế chưa xác minh, phiên âm Hán Việt hoặc bản Việt còn chữ Hán đều bị chặn xuất.</p></div><span id="resultCount" class="pill neutral">0 mục</span></div>
+      <div class="panel"><p id="qcInfo" class="qualityStrip">0 NAME · 0 thuật ngữ · 0 cần rà soát · 0 loại</p><div class="tools"><input id="search" placeholder="Tìm theo tên Trung hoặc tiếng Việt…"><select id="filterCategory"></select><select id="filterStatus"></select><label class="mini fileButton" for="nameInput">⇧ Nhập NAME TXT<input type="file" id="nameInput" accept=".txt,text/plain" hidden></label><button id="addName" class="mini">+ Thêm NAME</button></div>
+      <div class="tablewrap"><table><thead><tr><th>NAME gốc</th><th>Hán Việt / Tên Việt</th><th>Phân loại</th><th>Nguồn gốc / Xác nhận</th><th>Trạng thái / Cảnh báo</th><th>Lượt phát hiện</th><th>Kiểm tra</th><th></th></tr></thead><tbody id="tableBody"><tr><td colspan="8" class="empty">Chưa có NAME nào.</td></tr></tbody></table></div>
+      <div class="tableFooter"><span id="shownCount">0 mục đang hiển thị</span><div class="btnLine"><button id="prevPage" class="ghost">← Trước</button><button id="nextPage" class="ghost">Sau →</button><button id="exportGrouped2" class="ghost">⇩ TXT phân nhóm</button><button id="exportClean2" class="primary">⇩ TXT sạch</button></div></div></div>
     </section>
     <section id="guide" class="page hidden"><div class="pageHeader"><div><div class="eyebrow">TÀI LIỆU</div><h1>Cách sử dụng</h1><p>Ứng dụng chạy cục bộ, không cần API key.</p></div></div>
       <div class="panel guide"><h2>Quy trình</h2><p>1. Chọn TXT hoặc dán truyện. 2. Chọn <b>Tiếp tục với ChatGPT</b> và cấp quyền dùng gói. 3. Chọn mô hình, bấm <b>Lọc NAME</b>. 4. Có thể rà lượt hai khi hoàn tất. 5. Kiểm tra danh sách rồi xuất hai tệp.</p>
-      <h2>Độ chính xác</h2><p>AI có thể dịch sai hoặc bỏ sót tên hiếm. Ứng dụng chỉ nhận những khóa chữ Hán thực sự có trong đoạn vừa quét; các bản dịch khác nhau của cùng một khóa được giữ để người biên tập kiểm tra. Kết quả chưa tự động coi là chính xác tuyệt đối.</p>
+      <h2>Độ chính xác</h2><p>AI có thể dịch sai hoặc bỏ sót tên hiếm. Tên còn chữ Hán trong bản Việt sẽ bị chặn xuất. Tên quốc tế nghi vấn phải được chọn nguồn gốc và xác nhận tên Latin trước khi xuất. Có thể nhập một file NAME phân loại cũ ở trang Danh sách kết quả để lọc lại mà không tiêu hao hạn mức AI. Ứng dụng chỉ nhận những khóa chữ Hán thực sự có trong đoạn vừa quét; các bản dịch khác nhau của cùng một khóa được giữ để người biên tập kiểm tra. Kết quả chưa tự động coi là chính xác tuyệt đối.</p>
       <h2>Lưu tiến độ</h2><p>Sau mỗi đoạn thành công, ứng dụng lưu danh sách NAME và số đoạn đã hoàn tất trong thư mục dữ liệu người dùng trên Windows. Chọn lại đúng tệp để tiếp tục. Nếu gặp lỗi đăng nhập/hạn mức, tiến độ trước đó vẫn được giữ.</p>
       <h2>Riêng tư</h2><p>Truyện vẫn nằm trên máy của bạn. Khi bấm quét, ứng dụng gửi từng đoạn đang xử lý đến OpenAI theo quyền bạn cấp. OAuth và token được SDK xử lý trong tiến trình chính, mã hóa bằng kho khóa hệ điều hành và không được đưa vào trang giao diện.</p>
       </div>

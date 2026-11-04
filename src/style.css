@@ -127,3 +127,33 @@ to{opacity:1;transform:none}
 .tools{flex-wrap:wrap}
 }
 
+
+/* v0.2: lightweight paginated QA table and safe-export indicators */
+.qualityStrip{padding:13px 15px;margin:0 0 16px;background:#102c34;border:1px solid #27665d;border-radius:10px;color:#acecd6;font-size:12px;font-weight:650}
+
+.optionLine{display:flex;align-items:center;gap:10px;color:#c1ddcf;font-size:12px;margin:11px 0 0}
+.optionLine input{accent-color:#5be2c1;width:16px;height:16px}
+
+.tools{flex-wrap:wrap}
+.tools input{min-width:230px}
+.tools select{min-width:150px}
+.fileButton{white-space:nowrap;display:inline-flex;align-items:center;margin:0}
+
+.statusSelect{min-width:180px!important;max-width:210px}
+.qcNote{display:block;color:#f4cba1;font-size:10px;line-height:1.35;margin:5px 0 0;max-width:230px}
+
+.tablewrap{contain:layout style;max-height:64vh;overflow:auto}
+td{vertical-align:middle}
+.tableFooter .btnLine{flex-wrap:wrap}
+.tools button,.tools label{flex:none}
+
+
+/* v0.3: compact optional updater banner and a review control for international names */
+.updateBanner{display:flex;justify-content:space-between;align-items:center;gap:18px;border:1px solid #3a827b;background:#12323b;border-radius:12px;padding:14px 18px;margin-bottom:16px;flex-wrap:wrap}
+.updateBanner p{color:#bbd4df;font-size:12px;margin:5px 0 0}
+.updateBanner .btnLine{flex-wrap:wrap}
+.updateProgress{width:min(340px,75vw);height:6px;border-radius:5px;background:#1b5662;margin-top:10px;overflow:hidden}
+.updateProgress span{display:block;width:0;height:100%;background:#5be2c1;transition:width .2s}
+.originSelect{max-width:145px;min-width:120px!important}
+.foreignConfirm{display:block;margin-top:7px;font-size:11px;padding:5px 8px}
+.foreignConfirmed{display:block;margin-top:6px;font-size:11px;color:#91e3c2}

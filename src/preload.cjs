@@ -11,5 +11,11 @@ contextBridge.exposeInMainWorld('namePlus',Object.freeze({
   loadProject:key=>ipcRenderer.invoke('project:load',key),
   saveProject:(key,project)=>ipcRenderer.invoke('project:save',key,project),
   exportTxt:(name,data)=>ipcRenderer.invoke('export:txt',name,data),
-  usage:()=>ipcRenderer.invoke('external:usage')
+  usage:()=>ipcRenderer.invoke('external:usage'),
+  updateState:()=>ipcRenderer.invoke('update:state'),
+  checkUpdate:()=>ipcRenderer.invoke('update:check'),
+  downloadUpdate:()=>ipcRenderer.invoke('update:download'),
+  installUpdate:()=>ipcRenderer.invoke('update:install'),
+  updateReleases:()=>ipcRenderer.invoke('update:releases'),
+  onUpdate:callback=>{const handler=(_event,data)=>callback(data);ipcRenderer.on('update:changed',handler);return()=>ipcRenderer.removeListener('update:changed',handler);}
 }));

@@ -1,8 +1,11 @@
-name: Test NAME core
+name: Kiểm thử NAME
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -11,5 +14,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --check src/main.cjs && node --check src/preload.cjs && node --check src/core.mjs && node --check src/renderer.mjs
-      - run: npm test
+      - run: npm run check

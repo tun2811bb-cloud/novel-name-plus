@@ -25,7 +25,14 @@ test('trùng giữ bản đầu và lưu biến thể',()=>{
 test('xuất QT sạch và nhóm',()=>{
   const e=[{zh:'林清雾',vi:'Lâm Thanh Vụ',category:'PERSON'},{zh:'程然',vi:'Trình Nhiên',category:'PERSON'},{zh:'心斋境',vi:'cảnh Tâm Trai',category:'REALM'}];
   assert.ok(exportClean(e).startsWith('林清雾='));
-  assert.ok(exportGrouped(e).includes('# Cảnh giới'));
+  assert.ok(!exportGrouped(e).includes('# Cảnh giới'));
+  assert.ok(exportGrouped(e,{includeTerms:true}).includes('# Cảnh giới'));
   assert.ok(!exportClean(e).includes('#'));
 });
 test('parse JSON có wrapper Markdown',()=>assert.equal(parseAIResult('```json\n{"names":[{"zh":"程然","vi":"Trình Nhiên"}]}\n```').length,1));
+
+test('NAME proper excludes grade-terms by default',()=>{
+  const e=[{zh:'林清雾',vi:'Lâm Thanh Vụ',category:'PERSON'},{zh:'心斋境',vi:'cảnh Tâm Trai',category:'REALM'}];
+  assert.ok(!exportGrouped(e).includes('# Cảnh giới'));
+  assert.ok(exportGrouped(e,{includeTerms:true}).includes('# Cảnh giới'));
+});
