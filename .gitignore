@@ -1,0 +1,11 @@
+node_modules/
+.vendor/
+vendor/siwc-local/
+release/
+*.log
+.env
+*.pem
+*.key
+*.token
+*.secret
+.DS_Store
