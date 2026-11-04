@@ -1,0 +1,15 @@
+name: Test NAME core
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check src/main.cjs && node --check src/preload.cjs && node --check src/core.mjs && node --check src/renderer.mjs
+      - run: npm test
