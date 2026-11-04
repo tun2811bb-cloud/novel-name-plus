@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; connect-src 'none'">
+  <title>Novel NAME Plus</title><link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><span class="mark">名</span><div><b>NOVEL NAME</b><small>PLUS EDITION · v0.1</small></div></div>
+    <div class="sideLabel">BẢNG ĐIỀU KHIỂN</div>
+    <nav><button class="nav active" data-target="workspace">◈ &nbsp; Không gian lọc NAME</button><button class="nav" data-target="results">▤ &nbsp; Danh sách kết quả</button><button class="nav" data-target="guide">◇ &nbsp; Hướng dẫn</button></nav>
+    <div class="sideFoot"><span class="secureDot"></span> Xử lý file tại máy của bạn<br><small>Chỉ gửi từng đoạn truyện đến OpenAI khi bạn bấm quét.</small></div>
+  </aside>
+  <main>
+    <header class="top"><div><span class="crumb">ỨNG DỤNG</span><span class="slash">/</span><strong>Lọc NAME Trung–Việt</strong></div><div class="topBtns"><button id="usage" class="ghost">Hạn mức Plus ↗</button><span id="authIndicator" class="pill">Chưa kết nối</span></div></header>
+    <section id="workspace" class="page">
+      <div class="hero"><div class="eyebrow">TRỢ LÝ TRÍCH XUẤT TÊN RIÊNG</div><h1>Chuẩn hóa NAME.<br><em>Giữ đúng mạch truyện.</em></h1><p>Quét theo chương, phân 14 nhóm, rà hai lượt, tiếp tục từ chỗ dừng. Xuất trực tiếp cho Quick Translator.</p></div>
+      <div class="layout">
+        <div class="leftCol">
+          <div class="panel"><div class="panelTop"><div><span class="step">01</span><h2>Nạp truyện</h2></div><span class="muted">TXT · UTF-8 / GB18030</span></div>
+            <label id="dropzone" class="dropzone" for="fileInput"><input type="file" id="fileInput" accept=".txt,text/plain" hidden><span class="uploadIcon">⇧</span><strong>Kéo thả hoặc chọn tệp TXT</strong><small>Đọc ngay trên máy, không tự tải lên máy chủ khác</small></label>
+            <div class="or">HOẶC DÁN NỘI DUNG</div><textarea id="pasteBox" placeholder="Dán các chương truyện Trung Quốc vào đây…" rows="3"></textarea><button id="usePaste" class="mini">Dùng nội dung đã dán</button>
+            <div id="fileInfo" class="fileinfo hidden"><span>▣ <b id="filename"></b></span><span id="fileStats"></span></div>
+          </div>
+          <div class="panel"><div class="panelTop"><div><span class="step">02</span><h2>Kết nối ChatGPT Plus</h2></div><span class="miniBadge">Không cần API key</span></div>
+            <div class="connection"><div class="connIcon">✧</div><div class="connText"><b id="accountName">Chưa đăng nhập</b><small id="accountHint">Đăng nhập trong trình duyệt, cấp quyền dùng gói ChatGPT.</small></div></div>
+            <div class="btnLine"><button id="login" class="primary">Tiếp tục với ChatGPT</button><button id="logout" class="ghost hidden">Ngắt kết nối</button></div>
+            <label class="fieldLabel" for="model">Mô hình sẵn có trên tài khoản</label><select id="model"><option value="">Đăng nhập để tải danh sách mô hình</option></select>
+            <p class="micro">Việc dùng AI tính vào hạn mức gói ChatGPT. Trình duyệt GitHub Pages không trực tiếp sử dụng hạn mức này.</p>
+          </div>
+        </div>
+        <div class="rightCol">
+          <div class="panel process"><div class="panelTop"><div><span class="step">03</span><h2>Tiến trình xử lý</h2></div><span id="phase" class="pill neutral">Chờ tệp</span></div>
+            <div class="metrics"><div><span id="chapters">0</span><small>Chương</small></div><div><span id="parts">0</span><small>Đoạn</small></div><div><span id="names">0</span><small>NAME</small></div></div>
+            <div class="progresshead"><b>Tiến độ</b><span id="progressPct">0%</span></div><div class="track"><div id="progressFill" class="fill"></div></div><p id="progressText" class="micro">Chưa bắt đầu</p>
+            <div class="btnLine"><button class="primary" id="start" disabled>▶ &nbsp; Lọc NAME</button><button id="pause" class="ghost" disabled>Ⅱ &nbsp; Tạm dừng</button><button id="audit" class="ghost" disabled>↻ &nbsp; Rà lượt hai</button></div>
+            <div class="settingsRow"><label>Giới hạn ký tự/đoạn <select id="chunkSize"><option value="4000">4.000 (kỹ)</option><option value="6300" selected>6.300 (cân bằng)</option><option value="8500">8.500 (nhanh)</option></select></label></div>
+            <div class="log"><span class="logHead">NHẬT KÝ</span><div id="logLines">Sẵn sàng nạp truyện.</div></div>
+          </div>
+          <div class="panel highlight"><h3>Hai bản xuất · Một quy chuẩn</h3><p><b>NAME phân loại</b> dành cho biên tập; <b>NAME sạch</b> chỉ có <code>中文=Tiếng Việt</code> để nhập Quick Translator.</p><div class="btnLine"><button class="ghost" id="exportGrouped" disabled>⇩ &nbsp; TXT phân nhóm</button><button class="ghost" id="exportClean" disabled>⇩ &nbsp; TXT Quick Translator</button></div></div>
+        </div>
+      </div>
+    </section>
+    <section id="results" class="page hidden"><div class="pageHeader"><div><div class="eyebrow">TỪ ĐIỂN KẾT QUẢ</div><h1>Danh sách NAME</h1><p>Chỉnh sửa tên Việt, đổi nhóm, đánh dấu đã kiểm tra rồi xuất TXT.</p></div><span id="resultCount" class="pill neutral">0 mục</span></div>
+      <div class="panel"><div class="tools"><input id="search" placeholder="Tìm theo tên Trung hoặc tiếng Việt…"><select id="filterCategory"></select><button id="addName" class="mini">+ Thêm NAME</button></div>
+      <div class="tablewrap"><table><thead><tr><th>NAME gốc</th><th>Hán Việt / Tên Việt</th><th>Phân loại</th><th>Lượt phát hiện</th><th>Kiểm tra</th><th></th></tr></thead><tbody id="tableBody"><tr><td colspan="6" class="empty">Chưa có NAME nào.</td></tr></tbody></table></div>
+      <div class="tableFooter"><span id="shownCount">0 mục đang hiển thị</span><div class="btnLine"><button id="exportGrouped2" class="ghost">⇩ TXT phân nhóm</button><button id="exportClean2" class="primary">⇩ TXT sạch</button></div></div></div>
+    </section>
+    <section id="guide" class="page hidden"><div class="pageHeader"><div><div class="eyebrow">TÀI LIỆU</div><h1>Cách sử dụng</h1><p>Ứng dụng chạy cục bộ, không cần API key.</p></div></div>
+      <div class="panel guide"><h2>Quy trình</h2><p>1. Chọn TXT hoặc dán truyện. 2. Chọn <b>Tiếp tục với ChatGPT</b> và cấp quyền dùng gói. 3. Chọn mô hình, bấm <b>Lọc NAME</b>. 4. Có thể rà lượt hai khi hoàn tất. 5. Kiểm tra danh sách rồi xuất hai tệp.</p>
+      <h2>Độ chính xác</h2><p>AI có thể dịch sai hoặc bỏ sót tên hiếm. Ứng dụng chỉ nhận những khóa chữ Hán thực sự có trong đoạn vừa quét; các bản dịch khác nhau của cùng một khóa được giữ để người biên tập kiểm tra. Kết quả chưa tự động coi là chính xác tuyệt đối.</p>
+      <h2>Lưu tiến độ</h2><p>Sau mỗi đoạn thành công, ứng dụng lưu danh sách NAME và số đoạn đã hoàn tất trong thư mục dữ liệu người dùng trên Windows. Chọn lại đúng tệp để tiếp tục. Nếu gặp lỗi đăng nhập/hạn mức, tiến độ trước đó vẫn được giữ.</p>
+      <h2>Riêng tư</h2><p>Truyện vẫn nằm trên máy của bạn. Khi bấm quét, ứng dụng gửi từng đoạn đang xử lý đến OpenAI theo quyền bạn cấp. OAuth và token được SDK xử lý trong tiến trình chính, mã hóa bằng kho khóa hệ điều hành và không được đưa vào trang giao diện.</p>
+      </div>
+    </section>
+    <footer>Novel NAME Plus · Dự án cá nhân mã nguồn mở · Tích hợp chính thức Sign in with ChatGPT</footer>
+  </main>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="./renderer.mjs"></script>
+</body></html>
